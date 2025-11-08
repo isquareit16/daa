@@ -1,0 +1,86 @@
+#include<iostream>
+using namespace std;
+
+struct Item{
+	int value;
+	int weight;
+	int ratio;
+};
+
+
+void bubblesort(Item items[], int n){
+	for(int i = 0; i < n - 1; i++){
+		bool swaped = false;
+		for(int j = 0; j < n - i - 1; j++){
+			if (items[j].ratio < items[j + 1].ratio) {
+                Item temp = items[j];
+                items[j] = items[j + 1];
+                items[j + 1] = temp;
+                swaped = true;
+                }
+		}
+		if(!swaped) break;
+	}
+}
+
+
+double fknapsack(int W, Item items[], int n){
+	for(int i = 0; i < n; i++){
+		items[i].ratio = (double)items[i].value / items[i].weight;
+	}
+	bubblesort(items, n);
+	
+	double Maxprofit = 0;
+	int capacity = W;
+	for(int i = 0; i < n; i++){
+		if(capacity == 0){
+			break;
+		}
+		else if(items[i].weight <= capacity){
+			Maxprofit = Maxprofit + items[i].value;
+			capacity = capacity - items[i].weight;
+		}
+		else{
+			double fraction = (double)capacity / items[i].weight;
+			Maxprofit += items[i].value * fraction;
+			capacity = 0;
+		}
+	}
+	return Maxprofit;
+}
+
+int main(){
+	int n, W;
+	
+	cout << "Enter the number of Items: ";
+	cin >> n;
+	
+	cout << "Enter the Capacity of Kanpsack: ";
+	cin >> W;
+	
+	Item * items = new Item[n];
+	
+	for(int i = 0; i < n; i++){
+		cout << "Enter the weight and value of Item " << i + 1 << ":";
+		cin >> items[i].weight >> items[i].value;
+	}
+	
+	double maxValue = fknapsack(W, items, n);
+	cout << "Maximum Profit : " << maxValue << endl;
+	
+	return 0;
+}
+
+
+// Greedy Output:
+
+// student@student:~$ g++ Knapsack.cpp
+// student@student:~$ ./a.out
+// Enter the number of Items: 3
+// Enter the Capacity of Kanpsack: 8
+// Enter the weight and value of Item 1:2 60
+// Enter the weight and value of Item 2:3 80
+// Enter the weight and value of Item 3:5 120
+// Maximum Profit : 212
+// student@student:~$
+Greedy
