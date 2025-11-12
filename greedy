@@ -1,86 +1,57 @@
-#include<iostream>
+// Online C++ compiler to run C++ program online
+#include <iostream>
+#include<cmath>
 using namespace std;
 
-struct Item{
-	int value;
-	int weight;
-	int ratio;
+struct arr{
+    double weight;
+    double value;
+    double ratio;
 };
-
-
-void bubblesort(Item items[], int n){
-	for(int i = 0; i < n - 1; i++){
-		bool swaped = false;
-		for(int j = 0; j < n - i - 1; j++){
-			if (items[j].ratio < items[j + 1].ratio) {
-                Item temp = items[j];
-                items[j] = items[j + 1];
-                items[j + 1] = temp;
-                swaped = true;
-                }
-		}
-		if(!swaped) break;
-	}
-}
-
-
-double fknapsack(int W, Item items[], int n){
-	for(int i = 0; i < n; i++){
-		items[i].ratio = (double)items[i].value / items[i].weight;
-	}
-	bubblesort(items, n);
-	
-	double Maxprofit = 0;
-	int capacity = W;
-	for(int i = 0; i < n; i++){
-		if(capacity == 0){
-			break;
-		}
-		else if(items[i].weight <= capacity){
-			Maxprofit = Maxprofit + items[i].value;
-			capacity = capacity - items[i].weight;
-		}
-		else{
-			double fraction = (double)capacity / items[i].weight;
-			Maxprofit += items[i].value * fraction;
-			capacity = 0;
-		}
-	}
-	return Maxprofit;
-}
-
 int main(){
-	int n, W;
-	
-	cout << "Enter the number of Items: ";
-	cin >> n;
-	
-	cout << "Enter the Capacity of Kanpsack: ";
-	cin >> W;
-	
-	Item * items = new Item[n];
-	
-	for(int i = 0; i < n; i++){
-		cout << "Enter the weight and value of Item " << i + 1 << ":";
-		cin >> items[i].weight >> items[i].value;
-	}
-	
-	double maxValue = fknapsack(W, items, n);
-	cout << "Maximum Profit : " << maxValue << endl;
-	
-	return 0;
+    double profit=0;
+    int n;
+    cout<<"ENter number of items";
+    cin>>n;
+    cout<<"Enter capacity";
+    double capacity;
+    cin>>capacity;
+    
+    arr arr[n];
+    cout<<"Enter weighht and values";
+    for(int i=0;i<n;i++){
+        cin>>arr[i].weight>>arr[i].value;
+        arr[i].ratio=(arr[i].value)/(arr[i].weight);
+    }
+    
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(arr[j+1].ratio>arr[j].ratio){
+                double temp_ratio, temp_weight, temp_value;
+                temp_ratio=arr[j].ratio;
+                arr[j].ratio=arr[j+1].ratio;
+                arr[j+1].ratio=temp_ratio;
+
+                temp_weight = arr[j].weight;
+                arr[j].weight = arr[j+1].weight;
+                arr[j+1].weight = temp_weight;
+                
+                temp_value = arr[j].value;
+                arr[j].value = arr[j+1].value;
+                arr[j+1].value = temp_value;
+            }
+        }
+    }
+    
+    for(int i=0;i<n;i++){
+        if(arr[i].weight<capacity){
+            profit+=arr[i].value;
+            capacity-=arr[i].weight;
+        }else{
+            profit=profit+(capacity/arr[i].weight)*arr[i].value;
+        }
+    }
+        cout<<"max profit"<<profit;
+    
+    return 0;
 }
-
-
-// Greedy Output:
-
-// student@student:~$ g++ Knapsack.cpp
-// student@student:~$ ./a.out
-// Enter the number of Items: 3
-// Enter the Capacity of Kanpsack: 8
-// Enter the weight and value of Item 1:2 60
-// Enter the weight and value of Item 2:3 80
-// Enter the weight and value of Item 3:5 120
-// Maximum Profit : 212
-// student@student:~$
-Greedy
